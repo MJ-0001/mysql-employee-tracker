@@ -1,7 +1,7 @@
 require('dotenv').config();
 const mysql = require('mysql');
 const inquirer = require('inquirer');
-const sql = require('./sql.js');
+const sql = require('./scripts/sql.js');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -57,7 +57,7 @@ const search = () => {
 
 const searchAllEmp = () => {
   inquirer.prompt({
-    name: 'allEmp',
+    name: 'option',
     type: 'list',
     message: 'How would you like to view all employees?',
     choices: [
@@ -70,7 +70,7 @@ const searchAllEmp = () => {
     ]
   })
   .then(answer => {
-    switch (answer.allEmp) {
+    switch (answer.option) {
       case 'View all employees only':
         const queryOne = sql.viewAllEmp();
         connection.query(queryOne, (err, res) => {
@@ -82,6 +82,22 @@ const searchAllEmp = () => {
       case 'View all employees by department':
         const queryTwo = sql.viewAllEmpDep();
         connection.query(queryTwo, (err, res) => {
+          if (err) throw err;
+          console.table(res);
+          searchAllEmp();
+        });
+        break;
+      case 'View all employees by role':
+        const queryThree = sql.viewAllEmpRole();
+        connection.query(queryThree, (err, res) => {
+          if (err) throw err;
+          console.table(res);
+          searchAllEmp();
+        });
+        break;
+      case 'View all employees by manager':
+        const queryFour = sql.viewAllEmpMan();
+        connection.query(queryFour, (err, res) => {
           if (err) throw err;
           console.table(res);
           searchAllEmp();
