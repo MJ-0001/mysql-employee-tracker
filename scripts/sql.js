@@ -1,4 +1,4 @@
-const e = require('./classes.js');
+ const emp = require('../scripts/classes.js');
 
 module.exports = {
   viewAllEmp: () => {
@@ -40,11 +40,33 @@ module.exports = {
       ON t1.manager_id = t2.id
     ORDER BY manager_name;`;
   },
-
-  addEmp: () => {
+    
+  insEmp: (employee) => {
+    let roleId = emp.roles[employee.job]; 
+    let manId = emp.managers[employee.manager]; 
+    let depId = emp.departments[employee.dep]; 
     return `
-    INSERT INTO employees (first_name, last_name, roleId, managerId) 
-    VALUES (` + e.firstName + e.last_name + e.roleId + e.managerId + `)`;
+    INSERT INTO employees (first_name, last_name, role_id, manager_id, department_id) 
+    VALUES (${JSON.stringify(employee.fname)}` + ',' + `${JSON.stringify(employee.lname)}` + ',' + `${roleId}` + ',' + `${manId}` + ',' + `${depId});`;
+  },
+
+  insDep: (employee) => {
+    return `
+    INSERT INTO departments (name) 
+    VALUES (${employee.dep});`;
+  },
+
+  insRole: (employee) => {
+    return `
+    INSERT INTO roles (title, salary) 
+    VALUES (${employee.job}` + ',' + `${employee.salary});`;
+  },
+
+  insMan: (employee) => {
+    let manager = employee.manager.split(' ');
+    return `
+    INSERT INTO managers (first_name, last_name) 
+    VALUES (${manager});`;
   },
 
   remEmp: (table, condition) => {
