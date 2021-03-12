@@ -2,6 +2,7 @@ require('dotenv').config();
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const sql = require('./scripts/sql.js');
+const e = require('./scripts/classes.js');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -13,10 +14,10 @@ const connection = mysql.createConnection({
 
 connection.connect(err => {
   if (err) throw err;
-  search();
+  menu();
 });
 
-const search = () => {
+const menu = () => {
   inquirer.prompt({
     name: 'option',
     type: 'list',
@@ -32,16 +33,16 @@ const search = () => {
   .then(answer => {
     switch (answer.option) {
       case 'View all employees':
-        searchAllEmp();
+        search();
         break;
       case 'Add a new employee':
-        addEmp();
+        add();
         break;
       case 'Remove an employee':
-        remEmp();
+        remove();
         break;
       case 'Update an employee':
-        updEmp();
+        update();
         break;
       case 'Exit':
         connection.end();
@@ -49,13 +50,13 @@ const search = () => {
         break;
       default:
         console.log(`${answer.option} is not an option, please try again.`);
-        search();
+        menu();
         break;
     }
   });
 };
 
-const searchAllEmp = () => {
+const search = () => {
   inquirer.prompt({
     name: 'option',
     type: 'list',
@@ -104,7 +105,7 @@ const searchAllEmp = () => {
         });
         break;
       case 'Exit to main menu':
-        search();
+        menu();
         break;
       case 'Exit all':
         connection.end();
@@ -114,5 +115,83 @@ const searchAllEmp = () => {
         console.log('Please choose an option');
         searchAllEmp();
     }
+  });
+};
+
+const add = () => {
+  inquirer.prompt([
+    {
+    name: 'fname',
+    type: 'input',
+    message: "Please enter the employee's first name"
+    },
+    {
+    name: 'lname',
+    type: 'input',
+    message: "Please enter the employee's last name"
+    },
+    {
+    name: 'job',
+    type: 'list',
+    message: 'What role is the employee filling?',
+    choices: [
+      'Project Manager',
+      'Senior Project Manager',
+      'Developer',
+      'Test Manager',
+      'Business Analyst',
+      'Solutions Architect',
+      'DBA',
+      'People Lead',
+      'Finance Officer'
+    ]
+    },
+    {
+    name: 'salary',
+    type: 'list',
+    message: 'What pay band is the employee on?',
+    choices: [
+      25000,
+      30000,
+      35000,
+      40000,
+      45000,
+      50000,
+      60000
+    ]
+    },
+    {
+    name: 'dep',
+    type: 'list',
+    message: 'What department is the employee joining?',
+    choices: [
+      'Projects',
+      'I&T',
+      'HR',
+      'Finance'
+    ]
+    },
+    {
+    name: 'manager',
+    type: 'list',
+    message: 'Who will be managing the employee?',
+    choices: [
+      'Mark Wills',
+      'Matt Jones',
+      'Zoe Cavill',
+      'Nicola Hall',
+      'Liz Pigney',
+      'Thomas Brown',
+      'Chris Lee'
+    ]
+    }
+  ])
+  .then(({ fname, lname, job, salary, dep, manager }) => {
+    const employee = new e.Employee(fname, lname, job, salary, dep, manager);
+    const query = sql.insEmp(employee);
+      connection.query(query, (err, res) => {
+        if (err) throw err;
+        console.table(res);
+      })
   });
 };
