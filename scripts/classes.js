@@ -1,11 +1,27 @@
 class Employee {
-  constructor(fname, lname, job, salary, dep, manager) {
-  this.fname = fname;
-  this.lname = lname;
+  constructor(fName, lName, job, salary, dep, manager) {
+  this.fName = fName;
+  this.lName = lName;
   this.job = job;
   this.salary = salary;
   this.dep = dep;
   this.manager = manager;
+  }
+}
+
+class Role  {
+  constructor(title, salary, dep) {
+    this.title = title;
+    this.salary = salary;
+    this.depId = dep;
+  }
+}
+
+class Manager  {
+  constructor(fName, lName, title) {
+    this.fName = fName;
+    this.lName = lName;
+    this.title = title;
   }
 }
 
@@ -41,4 +57,4 @@ const managers = {
 
 
 
-module.exports = { Employee, departments, roles, managers };
+module.exports = { Employee, Role, Manager, departments, roles, managers };
