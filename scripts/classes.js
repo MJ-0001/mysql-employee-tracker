@@ -1,3 +1,4 @@
+// Class constructor for a new employee
 class Employee {
   constructor(fName, lName, job, salary, dep, manager) {
   this.fName = fName;
@@ -9,14 +10,16 @@ class Employee {
   }
 }
 
+// Class constructor for a new role
 class Role  {
   constructor(title, salary, dep) {
     this.title = title;
     this.salary = salary;
-    this.depId = dep;
+    this.dep = dep;
   }
 }
 
+// Class constructor for a new manager
 class Manager  {
   constructor(fName, lName, title) {
     this.fName = fName;
@@ -25,6 +28,9 @@ class Manager  {
   }
 }
 
+/* All objects are used in sql.js to access an id number when
+passed a string by the function call. */
+// Object for departments table
 const departments = {
   'Projects': 1,
   'I&T': 2,
@@ -32,6 +38,7 @@ const departments = {
   'Finance': 4
 };
 
+// Object for roles table
 const roles = {
   'Project Manager': 1,
   'Senior Project Manager': 2,
@@ -44,6 +51,7 @@ const roles = {
   'Finance Officer': 9
 };
 
+// Object for managers table
 const managers = {
   'Mark Wills': 1,
   'Matt Jones': 2,
@@ -53,8 +61,5 @@ const managers = {
   'Thomas Brown': 6,
   'Chris Lee': 7
 };
-
-
-
 
 module.exports = { Employee, Role, Manager, departments, roles, managers };
