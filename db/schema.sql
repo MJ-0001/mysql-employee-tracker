@@ -1,3 +1,4 @@
+drop database if exists organisation_db;
 create database organisation_db;
 use organisation_db;
 
