@@ -40,6 +40,24 @@ module.exports = {
       ON t1.manager_id = t2.id
     ORDER BY manager_name;`;
   },
+
+  viewAllDep: () => {
+    return `
+    SELECT *
+    FROM departments;`;
+  },
+
+  viewAllRole: () => {
+    return `
+    SELECT *
+    FROM roles;`;
+  },
+
+  viewAllMan: () => {
+    return `
+    SELECT *
+    FROM managers;`;
+  },
     
   insEmp: (employee) => {
     let roleId = emp.roles[employee.job]; 
@@ -47,38 +65,67 @@ module.exports = {
     let depId = emp.departments[employee.dep]; 
     return `
     INSERT INTO employees (first_name, last_name, role_id, manager_id, department_id) 
-    VALUES (${JSON.stringify(employee.fname)}` + ',' + `${JSON.stringify(employee.lname)}` + ',' + `${roleId}` + ',' + `${manId}` + ',' + `${depId});`;
+    VALUES (${JSON.stringify(employee.fName)}` + ',' + `${JSON.stringify(employee.lName)}` + ',' + `${roleId}` + ',' + `${manId}` + ',' + `${depId});`;
   },
-
-  insDep: (employee) => {
+  
+  insDep: (dep) => {
     return `
     INSERT INTO departments (name) 
-    VALUES (${employee.dep});`;
+    VALUES (${JSON.stringify(dep)});`;
   },
 
-  insRole: (employee) => {
+  insRole: (role) => {
+    let depId = emp.departments[role.dep];
     return `
-    INSERT INTO roles (title, salary) 
-    VALUES (${employee.job}` + ',' + `${employee.salary});`;
+    INSERT INTO roles (title, salary, department_id) 
+    VALUES (${JSON.stringify(role.title)}` + ',' + `${role.salary})` + ',' + `${depId});`;
   },
 
-  insMan: (employee) => {
-    let manager = employee.manager.split(' ');
+  insMan: (manager) => {
+    let roleId = emp.roles[manager.title];
     return `
-    INSERT INTO managers (first_name, last_name) 
-    VALUES (${manager});`;
+    INSERT INTO managers (first_name, last_name, role_id) 
+    VALUES (${JSON.stringify(manager.fName)}` + ',' + `${JSON.stringify(manager.lName)}` 
+    + ',' + `${roleId});`;
   },
 
-  remEmp: (table, condition) => {
+  remEmp: (employee) => {
+    let roleId = emp.roles[employee.job];
     return `
-    DELETE FROM` + table +
-    `WHERE` + condition + `;`;
+    DELETE FROM employees
+    WHERE first_name = ${JSON.stringify(employee.fName)}
+      AND last_name = ${JSON.stringify(employee.lName)}
+      AND role_id = ${roleId};`;
   },
 
-  updEmp: () => {
+  remDep: (dep) => {
     return `
-    UPADATE` + table +
-    `SET`
+    DELETE FROM departments
+    WHERE name = ${JSON.stringify(dep)};`;
+  },
+
+  remRole: (role) => {
+    return `
+    DELETE FROM roles
+    WHERE name = ${JSON.stringify(roles)};`;
+  },
+
+  remMan: (fName, lName) => {
+    return `
+    DELETE FROM managers
+    WHERE first_name = ${JSON.stringify(fName)}
+      AND last_name = ${JSON.stringify(lName)};`;
   }
-
 }
+
+
+
+
+
+
+
+// updEmp: () => {
+//   return `
+//   UPADATE` + table +
+//   `SET`
+// }
