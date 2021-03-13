@@ -1,9 +1,11 @@
+// Dependencies
 require('dotenv').config();
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const sql = require('./scripts/sql.js');
 const e = require('./scripts/classes.js');
 
+// Establish connection to mySQL database
 const connection = mysql.createConnection({
   host: 'localhost',
   port: 3306,
@@ -17,6 +19,7 @@ connection.connect(err => {
   menu();
 });
 
+// Main menu
 const menu = () => {
   inquirer.prompt({
     name: 'option',
@@ -26,7 +29,7 @@ const menu = () => {
       'View a table',
       'Add a new row to a table',
       'Remove a row from a table',
-      'Update a table',
+      'Update an employee',
       'Exit'
     ]
   })
@@ -41,8 +44,8 @@ const menu = () => {
       case 'Remove a row from a table':
         remove();
         break;
-      case 'Update a table':
-        update();
+      case 'Update an employee':
+        updateEmployee();
         break;
       case 'Exit':
         connection.end();
@@ -56,6 +59,7 @@ const menu = () => {
   });
 };
 
+// Sub-menu for 'view a table'
 const search = () => {
   inquirer.prompt({
     name: 'option',
@@ -145,6 +149,7 @@ const search = () => {
   });
 };
 
+// Sub-menu for add a new table row
 const add = () => {
   inquirer.prompt({
     name: 'option',
@@ -187,17 +192,18 @@ const add = () => {
   })
 }
 
+// Add a new employee
 const addEmployee = () => {
   inquirer.prompt([
     {
     name: 'fName',
     type: 'input',
-    message: "Please enter the employee's first name"
+    message: "Please enter the employee's first name:"
     },
     {
     name: 'lName',
     type: 'input',
-    message: "Please enter the employee's last name"
+    message: "Please enter the employee's last name:"
     },
     {
     name: 'job',
@@ -266,11 +272,12 @@ const addEmployee = () => {
   });
 };
 
+// Add a new department
 const addDepartment = () => {
   inquirer.prompt({
     name: 'dep',
     type: 'input',
-    message: 'Please enter the name of the department you would like to add: '
+    message: 'Please enter the name of the department you would like to add:'
   })
   .then(answer => {
     const dep = answer.dep;
@@ -288,7 +295,7 @@ const addRole = () => {
   {
     name: 'title',
     type: 'input',
-    message: 'Please enter the role you would like to add: '
+    message: 'Please enter the role you would like to add:'
   },
   {
     name: 'salary',
@@ -298,7 +305,7 @@ const addRole = () => {
   {
     name: 'dep',
     type: 'list',
-    message: 'Please select the department the role is in: ',
+    message: 'Please select the department the role is in:',
     choices: [
       'Projects',
       'I&T',
@@ -318,22 +325,23 @@ const addRole = () => {
   })
 }
 
+// Add a new manager
 const addManager = () => {
   inquirer.prompt([
   {
     name: 'fName',
     type: 'input',
-    message: "Please enter the manager's first name: "
+    message: "Please enter the manager's first name:"
   },
   {
     name: 'lName',
     type: 'input',
-    message: "Please enter the manager's last name: "
+    message: "Please enter the manager's last name:"
   },
   {
     name: 'title',
     type: 'list',
-    message: "Please select the manager's job title: ",
+    message: "Please select the manager's job title:",
     choices: [
       'Project Manager',
       'Senior Project Manager',
@@ -358,6 +366,7 @@ const addManager = () => {
   })
 }
 
+// Remove a row from a table
 const remove = () => {
   inquirer.prompt({
     name: 'option',
@@ -400,22 +409,23 @@ const remove = () => {
   })
 }
 
+// Remove an employee
 const removeEmployee = () => {
   inquirer.prompt([
     {
       name: 'fName',
       type: 'input',
-      message: "Enter the employee's first name: "
+      message: "Enter the employee's first name:"
     },
     {
       name: 'lName',
       type: 'input',
-      message: "Enter the employee's last name: "
+      message: "Enter the employee's last name:"
     },
     {
       name: 'job',
       type: 'list',
-      message: "Select the employee's current role: ",
+      message: "Select the employee's current role:",
       choices: [
         'Project Manager',
         'Senior Project Manager',
@@ -440,12 +450,13 @@ const removeEmployee = () => {
   });
 };
 
+// Remove a department
 const removeDepartment = () => {
   inquirer.prompt([
     {
       name: 'option',
       type: 'list',
-      message: 'Select the department you want to remove: ',
+      message: 'Select the department you want to remove:',
       choices: [
         'Projects',
         'I&T',
@@ -464,12 +475,13 @@ const removeDepartment = () => {
   })
 };
 
+// Remove a role
 const removeRole = () => {
   inquirer.prompt([
     {
       name: 'option',
       type: 'list',
-      message: 'Select the role you want to remove: ',
+      message: 'Select the role you want to remove:',
       choices: [
         'Project Manager',
         'Senior Project Manager',
@@ -493,24 +505,60 @@ const removeRole = () => {
   })
 };
 
+// Remove a manager
 const removeManager = () => {
   inquirer.prompt([
     {
       name: 'fName',
       type: 'input',
-      message: "Please enter the manager's first name: ",
+      message: "Please enter the manager's first name:",
     },
     {
       name: 'lName',
       type: 'input',
-      message: "Please enter the manager's last name: ",
+      message: "Please enter the manager's last name:",
     }
   ])
-  .then((answer) => {
+  .then(answer => {
     const query = sql.remMan(answer.fName, answer.lName);
     connection.query(query, (err, res) => {
       if (err) throw err;
       console.log(`Success! ${answer.fName} ${answer.lName} was removed from the roles table.`);
+    })
+  })
+};
+
+// Update an employee's details
+const updateEmployee = () => {
+  inquirer.prompt([
+    {
+      name: 'name',
+      type: 'input',
+      message: 'Enter the name of the employee who needs their details updating:',
+    },
+    {
+      name: 'option',
+      type: 'list',
+      message: 'What column do you want to update?',
+      choices: [
+        'first_name',
+        'last_name',
+        'role_id',
+        'manager_id',
+        'department_id'
+      ]
+    },
+    {
+      name: 'value',
+      type: 'input',
+      message: 'Enter the new value for this column:',
+    }
+  ])
+  .then(answer => {
+    const query = sql.updEmp(answer.name, answer.option, answer.value);
+    connection.query(query, (err, res) => {
+      if (err) throw err;
+      console.log(`Success! The ${answer.option} for ${answer.name} was updated to ${answer.value}.`);
     })
   })
 };
