@@ -63,7 +63,7 @@ const menu = () => {
 const search = () => {
   inquirer.prompt({
     name: 'option',
-    type: 'rawlist',
+    type: 'list',
     message: 'What would you like to view?',
     choices: [
       'View all employees only',
@@ -179,7 +179,7 @@ const add = () => {
         addManager();
         break;
       case 'Exit to main menu':
-        search();
+        menu();
         break;
       case 'Exit all':
         connection.end();
@@ -267,7 +267,7 @@ const addEmployee = () => {
       connection.query(query, (err, res) => {
         if (err) throw err;
         console.log('Success! A new employee was added.');
-        add();
+        setTimeout(add, 2000);
       })
   });
 };
@@ -285,7 +285,7 @@ const addDepartment = () => {
     connection.query(query, (err, res) => {
       if (err) throw err;
       cconsole.log('Success! A new department was added.');
-      add();
+      setTimeout(add, 2000);
     })
   })
 }
@@ -320,7 +320,7 @@ const addRole = () => {
     connection.query(query, (err, res) => {
       if (err) throw err;
       console.log('Success! A new role was added.');
-      add();
+      setTimeout(add, 2000);
     })
   })
 }
@@ -361,7 +361,7 @@ const addManager = () => {
     connection.query(query, (err, res) => {
       if (err) throw err;
       console.log('Success! A new manager was added.');
-      add();
+      setTimeout(add, 2000);
     })
   })
 }
@@ -396,7 +396,7 @@ const remove = () => {
         removeManager();
         break;
       case 'Exit to main menu':
-        search();
+        menu();
         break;
       case 'Exit all':
         connection.end();
@@ -444,8 +444,8 @@ const removeEmployee = () => {
     const query = sql.remEmp(employee);
     connection.query(query, (err, res) => {
       if (err) throw err;
-      console.log(`Success! ${fName} + ${lName} was removed from the employees table.`);
-      remove();
+      console.log(`Success! ${fName} ${lName} was removed from the employees table.`);
+      setTimeout(remove, 2000);
     })
   });
 };
@@ -470,7 +470,7 @@ const removeDepartment = () => {
     connection.query(query, (err, res) => {
       if (err) throw err;
       console.log(`Success! ${answer.option} was removed from the departments table.`);
-      remove();
+      setTimeout(remove, 2000);
     })
   })
 };
@@ -500,7 +500,7 @@ const removeRole = () => {
     connection.query(query, (err, res) => {
       if (err) throw err;
       console.log(`Success! ${answer.option} was removed from the roles table.`);
-      remove();
+      setTimeout(remove, 2000);
     })
   })
 };
@@ -524,6 +524,7 @@ const removeManager = () => {
     connection.query(query, (err, res) => {
       if (err) throw err;
       console.log(`Success! ${answer.fName} ${answer.lName} was removed from the roles table.`);
+      setTimeout(remove, 2000);
     })
   })
 };
@@ -559,6 +560,7 @@ const updateEmployee = () => {
     connection.query(query, (err, res) => {
       if (err) throw err;
       console.log(`Success! The ${answer.option} for ${answer.name} was updated to ${answer.value}.`);
+      setTimeout(menu, 2000);
     })
   })
 };
